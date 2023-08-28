@@ -27,7 +27,15 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
-    // Send a ping to confirm a successful connection
+
+    const mobileDataCollection = client.db("mobileDb").collection("mobileData");
+    const reviewsCollection = client.db("mobileDb").collection("reviews");
+
+    app.get("/mobile-data", async (req, res) => {
+      const result = await mobileDataCollection.find({}).toArray();
+      res.send(result);
+    });
+
     await client.db("admin").command({ ping: 1 });
     console.log("connected to mongodb.You successfully connected to MongoDB!");
   } finally {
