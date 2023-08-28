@@ -30,9 +30,20 @@ async function run() {
 
     const mobileDataCollection = client.db("mobileDb").collection("mobileData");
     const reviewsCollection = client.db("mobileDb").collection("reviews");
+    const cartsCollection = client.db("mobileDb").collection("carts");
 
     app.get("/mobile-data", async (req, res) => {
       const result = await mobileDataCollection.find({}).toArray();
+      res.send(result);
+    });
+    app.get("/reviews", async (req, res) => {
+      const result = await reviewsCollection.find({}).toArray();
+      res.send(result);
+    });
+
+    app.post("/carts", async (req, res) => {
+      const newItem = req.body;
+      const result = await cartsCollection.insertOne(newItem);
       res.send(result);
     });
 
