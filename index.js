@@ -31,16 +31,34 @@ async function run() {
     const mobileDataCollection = client.db("mobileDb").collection("mobileData");
     const reviewsCollection = client.db("mobileDb").collection("reviews");
     const cartsCollection = client.db("mobileDb").collection("carts");
+    const usersCollection = client.db("mobileDb").collection("users");
 
+    // mobile data api
     app.get("/mobile-data", async (req, res) => {
       const result = await mobileDataCollection.find({}).toArray();
       res.send(result);
     });
+
+    // reviews api
     app.get("/reviews", async (req, res) => {
       const result = await reviewsCollection.find({}).toArray();
       res.send(result);
     });
 
+    // users api
+    app.post("/users", async (req, res) => {
+      const user = req.body;
+      const query = { email: user.email };
+      const exitsUser = await usersCollection.findOne(query);
+      console.log("exitsUser", exitsUser);
+      if (exitsUser) {
+        return res.send({ message: "user already exit" });
+      }
+      const result = await usersCollection.insertOne(user);
+      res.send(result);
+    });
+
+    // carts apis
     app.post("/carts", async (req, res) => {
       const newItem = req.body;
       const result = await cartsCollection.insertOne(newItem);
