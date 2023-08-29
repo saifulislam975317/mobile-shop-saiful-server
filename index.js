@@ -50,11 +50,22 @@ async function run() {
       const user = req.body;
       const query = { email: user.email };
       const exitsUser = await usersCollection.findOne(query);
-      console.log("exitsUser", exitsUser);
       if (exitsUser) {
         return res.send({ message: "user already exit" });
       }
       const result = await usersCollection.insertOne(user);
+      res.send(result);
+    });
+
+    app.get("/users", async (req, res) => {
+      const result = await usersCollection.find({}).toArray();
+      res.send(result);
+    });
+
+    app.delete("/users/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await usersCollection.deleteOne(query);
       res.send(result);
     });
 
