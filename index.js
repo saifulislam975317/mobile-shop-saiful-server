@@ -75,6 +75,14 @@ async function run() {
       const result = await mobileDataCollection.insertOne(newItem);
       res.send(result);
     });
+
+    app.delete("/mobile-data/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await mobileDataCollection.deleteOne(query);
+      res.send(result);
+    });
+
     // reviews api
     app.get("/reviews", async (req, res) => {
       const result = await reviewsCollection.find({}).toArray();
