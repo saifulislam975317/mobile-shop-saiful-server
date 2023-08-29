@@ -70,6 +70,11 @@ async function run() {
       res.send(result);
     });
 
+    app.post("/mobile-data", verifyJWT, async (req, res) => {
+      const newItem = req.body;
+      const result = await mobileDataCollection.insertOne(newItem);
+      res.send(result);
+    });
     // reviews api
     app.get("/reviews", async (req, res) => {
       const result = await reviewsCollection.find({}).toArray();
