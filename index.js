@@ -70,6 +70,36 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/mobile-data/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await mobileDataCollection.findOne(query);
+      res.send(result);
+    });
+
+    app.put("/mobile-data/:id", async (req, res) => {
+      const id = req.params.id;
+      const newItem = req.body;
+      const query = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+
+      const updateDoc = {
+        $set: {
+          name: newItem.name,
+          price: newItem.price,
+          category: newItem.category,
+          description: newItem.description,
+          image: newItem.image,
+        },
+      };
+      const result = await mobileDataCollection.updateOne(
+        query,
+        updateDoc,
+        options
+      );
+      res.send(result);
+    });
+
     app.post("/mobile-data", verifyJWT, async (req, res) => {
       const newItem = req.body;
       const result = await mobileDataCollection.insertOne(newItem);
