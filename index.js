@@ -196,6 +196,21 @@ async function run() {
       res.send(result);
     });
 
+    // all data get from all collection
+    app.get("/products-stats", async (req, res) => {
+      const products = await mobileDataCollection.estimatedDocumentCount();
+      const users = await usersCollection.estimatedDocumentCount();
+      const orders = await paymentCollection.estimatedDocumentCount();
+      const payment = await paymentCollection.find({}).toArray();
+      const revenue = payment.reduce((sum, item) => sum + item.price, 0);
+      res.send({
+        products,
+        users,
+        orders,
+        revenue,
+      });
+    });
+
     // payment api
 
     app.post("/create-payment-intent", async (req, res) => {
