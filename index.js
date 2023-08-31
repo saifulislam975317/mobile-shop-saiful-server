@@ -200,6 +200,7 @@ async function run() {
     app.get("/products-stats", async (req, res) => {
       const products = await mobileDataCollection.estimatedDocumentCount();
       const users = await usersCollection.estimatedDocumentCount();
+      const shop = await cartsCollection.estimatedDocumentCount();
       const orders = await paymentCollection.estimatedDocumentCount();
       const payment = await paymentCollection.find({}).toArray();
       const revenue = payment.reduce((sum, item) => sum + item.price, 0);
@@ -207,8 +208,17 @@ async function run() {
         products,
         users,
         orders,
+        shop,
         revenue,
       });
+    });
+
+    // get payment history
+    app.get("/payment-history/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const result = await paymentCollection.find(query).toArray();
+      res.send(result);
     });
 
     // payment api
